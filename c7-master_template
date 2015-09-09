@@ -1,0 +1,8 @@
+GRAPHICS=[LISTEN="0.0.0.0",TYPE="VNC"]
+USER_INPUTS=[ROOTPASSWORD="M|password|Unix root user password"]
+NIC=[NETWORK="T2-Dummy-Prv",NETWORK_UNAME="oneadmin"]
+CONTEXT=[FILES_DS="$FILE[IMAGE_ID=713] $FILE[IMAGE_ID=690] $FILE[IMAGE_ID=688] $FILE[IMAGE_ID=664] $FILE[IMAGE_ID=660] $FILE[IMAGE_ID=655] $FILE[IMAGE_ID=654] $FILE[IMAGE_ID=652]",ROOTPASSWORD="$ROOTPASSWORD",NETWORK="YES",ELTYPE="master",SSH_PUBLIC_KEY="",INIT_SCRIPTS="c7-dhcp-upgrade.sh   c7-epel.sh c7-mount-images.sh c7-java8.sh c7-elasticsearch1_4.sh c7-zabbix-gnomes.sh c7-set-root.sh"]
+MEMORY="1536"
+CPU="1"
+DISK=[IMAGE_UNAME="aguarise",IMAGE="CentOS-7"]
+
