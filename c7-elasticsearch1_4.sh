@@ -24,6 +24,11 @@ EOL
 yum -y install avahi-tools >> $LOGFILE 2>&1
 
 
+#open avahi port
+
+firewall-cmd --zone=public --add-port=5353/udp --permanent >> $LOGFILE 2>&1
+firewall-cmd --reload >> $LOGFILE 2>&1
+
 if [[ "$ELTYPE" =~ "master" ]]; then
 SERVICE_NAME="el-master-${CLUSTERNAME}"
 cat > /etc/avahi/services/$SERVICE_NAME.service << EOL
@@ -42,10 +47,6 @@ cat > /etc/avahi/services/$SERVICE_NAME.service << EOL
 </service-group>
 EOL
 
-#open avahi port
-
-firewall-cmd --zone=public --add-port=5353/udp --permanent >> $LOGFILE 2>&1
-firewall-cmd --reload >> $LOGFILE 2>&1
 fi
 
 
