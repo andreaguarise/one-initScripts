@@ -5,7 +5,8 @@
 #
 #  Created by Andrea Guarise on 7/8/15.
 #
-# Needs: $ZABBIXDB $ZABBIXPWD $MYSQLROOT $ZABBIX_SERVICE_NAME
+# Needs: $ZABBIXDB $ZABBIXPWD(*) $MYSQLROOT(*) $ZABBIX_SERVICE_NAME
+# (*): REQUIRED
 
 LOGFILE=/tmp/zabbix-server.log
 
@@ -16,13 +17,6 @@ rpm -i http://repo.zabbix.com/zabbix/2.4/rhel/7/x86_64/zabbix-release-2.4-1.el7.
 yum update >> $LOGFILE 2>&1
 
 yum install -y zabbix-proxy.x86_64 zabbix-web-mysql.noarch
-
-#sed -e "s/# php_value date.timezone Europe\/Riga/php_value date.timezone Europe\/Rome/g" /etc/httpd/conf.d/zabbix.conf > /etc/httpd/conf.d/zabbix.conf.new
-
-#mv -f /etc/httpd/conf.d/zabbix.conf.new /etc/httpd/conf.d/zabbix.conf
-
-#cat /etc/httpd/conf.d/zabbix.conf >> $LOGFILE 2>&1
-
 
 Z_DB=zabbix_proxy
 if [ -z ${ZABBIXDB} ]; then
@@ -43,18 +37,15 @@ mysql -uroot -p$MYSQLROOT -e "FLUSH PRIVILEGES" >> $LOGFILE 2>&1
 
 mysql -u zabbix -p$ZABBIXPWD ${Z_DB} < /usr/share/doc/zabbix-proxy-mysql-2.4.7/create/schema.sql
 
-#sed -e "s/DBName=zabbix/DBName=$Z_DB/g;s/# DBPassword=/DBPassword=$ZABBIXPWD/g" /etc/zabbix/zabbix_server.conf > /etc/zabbix/zabbix_server.conf.new
-#mv -f /etc/zabbix/zabbix_server.conf.new /etc/zabbix/zabbix_server.conf
+sed -e "s/DBName=zabbix/DBName=$Z_DB/g;s/# DBPassword=/DBPassword=$ZABBIXPWD/g" /etc/zabbix/zabbix_proxy.conf > /etc/zabbix/zabbix_proxy.conf.new
+mv -f /etc/zabbix/zabbix_proxy.conf.new /etc/zabbix/zabbix_proxy.conf
 
-#service zabbix-server start >> $LOGFILE 2>&1
-#chkconfig zabbix-server on >> $LOGFILE 2>&1
+service zabbix-proxy start >> $LOGFILE 2>&1
+chkconfig zabbix-proxy on >> $LOGFILE 2>&1
 
 
-#open zabbix server port
+#open zabbix proxy port
 
-#firewall-cmd --zone=public --add-port=10051/tcp --permanent >> $LOGFILE 2>&1
+firewall-cmd --zone=public --add-port=10051/tcp --permanent >> $LOGFILE 2>&1
 
-#open avahi port
-
-#firewall-cmd --zone=public --add-port=5353/udp --permanent >> $LOGFILE 2>&1
-#firewall-cmd --reload >> $LOGFILE 2>&1
+firewall-cmd --reload >> $LOGFILE 2>&1
